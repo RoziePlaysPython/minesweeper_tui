@@ -1,4 +1,3 @@
-import curses
 import random
 import numpy
 
@@ -17,7 +16,7 @@ class Tile:
         return draw
 
 class Field:
-    def __init__(self, size: list, bomb_count: int):
+    def __init__(self, size: tuple, bomb_count: int):
         self.size = size
         self.bomb_count = bomb_count
         self.bombs = []
@@ -67,18 +66,23 @@ class Field:
 
     def generate_field(self):
         self.field = []
-        for y in range(self.size[1]):
-            self.field.append([])
-            for x in range(self.size[0]):
-                tile = Tile(is_bomb = (x, y) in self.bombs, bombs_around = self.count_neighbours((x, y)))
-                self.field[y].append(tile)
+       # for y in range(self.size[1]):
+       #     self.field.append([])
+       #     for x in range(self.size[0]):
+       #         tile = Tile(is_bomb = (x, y) in self.bombs, bombs_around = self.count_neighbours((x, y)))
+       #         self.field[y].append(tile)
+        for cell in range(self.size[0]*self.size[1]):
+            x = cell%self.size[0]
+            y = cell//self.size[0]
+            tile = Tile(is_bomb = (x, y) in self.bombs, bombs_around = self.count_neighbours((x, y)))
+            self.field.append(tile)
         self.field = numpy.array(self.field)
+        self.field = self.field.reshape(self.size[1],self.size[0])
     
     def show(self, cheats = False):
-        fieldstr = '\n'.join([''.join([self.field[x, y].show() for x in range(len(self.field[y]))]) for y in range(len(self.field))])
-        return fieldstr
+        fieldlst = [''.join([self.field[x, y].show() for x in range(self.size[0])]) for y in range(self.size[1])]
+        return fieldlst
 
-    #TODO:
     def dig(self, coords: tuple):
         if not self.field[coords].is_hidden:
             return 'bruh'
@@ -92,20 +96,12 @@ class Field:
                 self.dig(coord) #recursive part that allowes to do continious digging until we get closer to bombs
             return
     def mark(self, coords: tuple):
+        if self.field[coords].is_marked: #since marking can only apply to non-hidden tiles we don't need any additional checks
+            self.field[coords].is_marked = False
+            return
         if self.field[coords].is_hidden:
             self.field[coords].is_marked = True
+            return
+            # only unhidden and unmarked tiles pass through here
+            # so additional feature can be added: tile checking (if bombs_around == marked_around: dig all unmarked around)
         return
-        
-class App:
-    def __init__(self):
-        screen = curses.initscr()
-        curses.noecho()
-        curses.cbreak()
-
-        
-        
-        curses.nocbreak()
-        curses.echo()
-        curses.endwin()
-    def field_box(self, field):
-        pass
