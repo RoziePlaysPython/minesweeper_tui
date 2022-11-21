@@ -7,6 +7,7 @@ logging.basicConfig(filename='latest.log', encoding='utf-8', level=logging.DEBUG
 class App:
     def __init__(self, stdsrc, start_from='menu'):
         curses.curs_set(0)
+        curses.mousemask(1)
         self.screen = stdsrc
         self.appsize = (45,30)
         self.panels = {
@@ -28,8 +29,9 @@ class App:
                     panel = self.panels[reply['changepanel']]
                     panel.takedata(reply['callback_data'])
                     panel.update('genericupdate')
-                if reply==69:
-                    break
+                if 'gamestatus' in reply.keys():
+                    if reply['gamestatus'] == 69:
+                        break
             event = self.screen.getch()
         
     def chksize(self): # checks if app can fit in available terminal size. Returns False if it can't
@@ -146,7 +148,7 @@ class Field:
     def update(self, event):
         if event == curses.KEY_MOUSE:
             _, mx, my, _, _ = curses.getmouse() #coords are relative to stdsrc, not window this class creates
-            finx, finy = mx-self.posx, my-self.posy # and here we convert them into something related to our window
+            finx, finy = mx-self.posx-1, my-self.posy-1 # and here we convert them into something related to our window
             if not (0<finx<self.size[0] and 0<finy<self.size[1]): 
                 return None
             response = self.field.dig((finx,finy))
@@ -154,7 +156,7 @@ class Field:
             if response == 69:
                 render_data.append('BOOM!')
             self.render(render_data)
-            return response
+            return {'gamestatus':response}
         if event == 'genericupdate':
             self.render(self.field.show())
     def render(self, render_data: list):

@@ -11,7 +11,7 @@ class Tile:
     def show(self):
         draw = ' ' if self.bombs_around == 0 else str(self.bombs_around)
         draw = '*' if self.is_bomb   else draw
-        draw = '~' if self.is_hidden else draw
+        draw = '🞎' if self.is_hidden else draw
         draw = '!' if self.is_marked else draw
         return draw
 
@@ -45,12 +45,12 @@ class Field:
                         (x, y) for x in range(coords[0]-1, coords[0]+2) 
                                for y in range(coords[1]-1, coords[1]+2)
                        ]
-        print(surroundings)
+        #print(surroundings)
         surroundings.remove(coords) #remove coord we got as an input
         #replacing all invalid coords with None
         for xypair in surroundings:
             notvalid = ((xypair[0] < 0) or (xypair[0] >= self.size[0]) or (xypair[1] < 0) or (xypair[1] >= self.size[1]))
-            print(xypair, notvalid)
+            #print(xypair, notvalid)
             if notvalid:
                 surroundings[surroundings.index(xypair)] = None
         return [item for item in surroundings if item != None] #returns everything but None
@@ -86,10 +86,10 @@ class Field:
     def dig(self, coords: tuple):
         if not self.field[coords].is_hidden:
             return 'bruh'
+        self.field[coords].is_hidden = False
         if self.field[coords].is_bomb:
             #bomb go boom here
             return 69
-        self.field[coords].is_hidden = False
         if self.field[coords].bombs_around == 0:
             surroundings = self.valid_surroundings(coords)
             for coord in surroundings:
