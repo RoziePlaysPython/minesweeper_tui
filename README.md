@@ -7,3 +7,7 @@ This project is done completely from scratch. Be wary of shitcode hidden within.
     - [X] Field box
     - [X] Menu box
     - [ ] Settings box
+### Playing
+Launch with
+`python3 launch.py`
+Navigate menu with WASD (up/down - W/S, choose/go_back - D/A accordingly)
