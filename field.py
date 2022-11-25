@@ -11,7 +11,7 @@ class Tile:
     def show(self):
         draw = ' ' if self.bombs_around == 0 else str(self.bombs_around)
         draw = '*' if self.is_bomb   else draw
-        draw = '🞎' if self.is_hidden else draw
+        draw = '~' if self.is_hidden else draw
         draw = '!' if self.is_marked else draw
         return draw
 
@@ -80,8 +80,9 @@ class Field:
         self.field = self.field.reshape(self.size[1],self.size[0])
     
     def show(self, cheats = False):
-        fieldlst = [''.join([self.field[x, y].show() for x in range(self.size[0])]) for y in range(self.size[1])]
-        return fieldlst
+#        fieldlst = [''.join([self.field[x, y].show() for x in range(self.size[0])]) for y in range(self.size[1])]
+        field = [[self.field[x, y].show() for x in range(self.size[0])] for y in range (self.size[1])]
+        return field
 
     def dig(self, coords: tuple):
         if not self.field[coords].is_hidden:

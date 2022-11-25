@@ -149,7 +149,7 @@ class Field:
         if event == curses.KEY_MOUSE:
             _, mx, my, _, _ = curses.getmouse() #coords are relative to stdsrc, not window this class creates
             finx, finy = mx-self.posx-1, my-self.posy-1 # and here we convert them into something related to our window
-            if not (0<finx<self.size[0] and 0<finy<self.size[1]): 
+            if not (0<=finx<self.size[0] and 0<=finy<self.size[1]): 
                 return None
             response = self.field.dig((finx,finy))
             render_data = self.field.show()
@@ -164,7 +164,8 @@ class Field:
         self.window.box()
         for idx, row in enumerate(render_data):
             #self.window.addstr(self.posy+1+idx, self.posx+1, row)
-            self.window.addstr(idx+1,1,row)
+            for idy, tile in enumerate(row):
+                self.window.addch(idx+1,idy+1,tile)
         self.window.refresh()
         
 class Settings:

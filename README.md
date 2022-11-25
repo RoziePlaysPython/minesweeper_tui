@@ -4,6 +4,6 @@ This project is done completely from scratch. Be wary of shitcode hidden within.
  - [X] Field and Tile object
  - [X] Recursive digging
  - [ ] Actual tui ncurses part:
-    - [ ] Field box
-    - [ ] Menu box
+    - [X] Field box
+    - [X] Menu box
     - [ ] Settings box
